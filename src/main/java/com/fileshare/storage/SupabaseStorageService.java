@@ -53,9 +53,14 @@ public class SupabaseStorageService implements StorageService {
     }
 
     private HttpRequest.Builder base(String key) {
-        return HttpRequest.newBuilder(URI.create(baseUrl + key))
-                .header("Authorization", "Bearer " + serviceKey)
+        HttpRequest.Builder b = HttpRequest.newBuilder(URI.create(baseUrl + key))
                 .header("apikey", serviceKey);
+        // Old-style service_role keys are JWTs and go in Authorization too.
+        // New sb_secret_ keys are not JWTs, so they are sent only in the apikey header.
+        if (serviceKey.startsWith("eyJ")) {
+            b.header("Authorization", "Bearer " + serviceKey);
+        }
+        return b;
     }
 
     private <T> HttpResponse<T> send(HttpRequest req, HttpResponse.BodyHandler<T> handler) throws IOException {
