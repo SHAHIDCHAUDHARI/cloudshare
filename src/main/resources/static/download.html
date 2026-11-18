@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Download - CloudShare</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main class="card">
+    <h1>Cloud<span>Share</span></h1>
+
+    <div id="loading" class="sub">Loading file details...</div>
+
+    <div id="fileBox" hidden>
+      <div class="fileicon">&#128196;</div>
+      <h2 id="fileName"></h2>
+      <p class="muted" id="fileMeta"></p>
+      <a id="downloadBtn" class="btn" href="#">Download</a>
+    </div>
+
+    <div id="errorBox" hidden>
+      <div class="fileicon">&#9888;</div>
+      <h2 id="errorText"></h2>
+    </div>
+
+    <p><a href="/" class="back">&larr; Share your own file</a></p>
+  </main>
+  <footer>Built with Java Spring Boot &middot; Hosted on the cloud</footer>
+  <script src="/download.js"></script>
+</body>
+</html>

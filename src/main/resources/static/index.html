@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CloudShare - Share files with a link</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main class="card">
+    <h1>Cloud<span>Share</span></h1>
+    <p class="sub">Upload a file, get a link, share it. The link expires automatically.</p>
+
+    <div id="uploadBox">
+      <label id="dropZone" class="drop">
+        <input type="file" id="fileInput" hidden>
+        <strong id="dropText">Click to choose a file or drag it here</strong>
+        <small>Maximum size 10 MB</small>
+      </label>
+
+      <div class="row">
+        <label for="expiry">Link expires after</label>
+        <select id="expiry">
+          <option value="1">1 hour</option>
+          <option value="24" selected>24 hours</option>
+          <option value="72">3 days</option>
+          <option value="168">7 days</option>
+        </select>
+      </div>
+
+      <button id="uploadBtn" class="btn">Upload</button>
+    </div>
+
+    <div id="result" class="result" hidden>
+      <p>Your file is ready. Share this link:</p>
+      <div class="linkrow">
+        <input type="text" id="linkInput" readonly>
+        <button id="copyBtn" class="btn small">Copy</button>
+      </div>
+      <p class="muted" id="resultInfo"></p>
+      <button id="anotherBtn" class="btn ghost">Upload another file</button>
+    </div>
+
+    <p id="message" class="message" hidden></p>
+  </main>
+  <footer>Built with Java Spring Boot &middot; Hosted on the cloud</footer>
+  <script src="/app.js"></script>
+</body>
+</html>
