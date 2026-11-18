@@ -3,119 +3,153 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CloudShare - Share files instantly</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%237c5cff' d='M7 18a5 5 0 0 1-.9-9.9A6 6 0 0 1 17.7 9 4.5 4.5 0 0 1 17.5 18z'/></svg>">
+  <title>CloudShare — Share any file with a link</title>
+  <meta name="theme-color" content="#09090b">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%234f8cff'/><path d='M8 16a3 3 0 0 1-.4-6A4 4 0 0 1 15.4 9 3 3 0 0 1 16 16z' fill='white'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <div class="bg"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
-
-  <nav>
-    <a href="/" class="logo">
-      <span class="logo-icon"><svg viewBox="0 0 24 24" fill="#fff"><path d="M7 18a5 5 0 0 1-.9-9.9A6 6 0 0 1 17.7 9 4.5 4.5 0 0 1 17.5 18z"/></svg></span>
+  <header class="nav">
+    <a href="/" class="brand">
+      <span class="brand-mark"><svg viewBox="0 0 24 24" fill="#fff"><path d="M7 18a4.5 4.5 0 0 1-.6-8.96A6 6 0 0 1 17.6 9 4.5 4.5 0 0 1 17 18z"/></svg></span>
       CloudShare
     </a>
-    <span class="pill"><b>&#9679;</b> Free &middot; No sign-up needed</span>
-  </nav>
+    <div class="nav-right"><span class="nav-note">Free &middot; No sign-up</span><span class="credit">created by <b>Shahid</b></span></div>
+  </header>
 
   <section class="hero">
-    <span class="eyebrow"><span class="dot"></span> Powered by the cloud</span>
-    <h1>Share files at the<br><span class="grad">speed of a link.</span></h1>
-    <p>Upload any file, get a secure link in seconds, and share it with anyone.<br>Links expire automatically, so your files never stay forever.</p>
+    <div class="fade">
+      <span class="badge"><b>New</b> Share files with a link or a QR code</span>
+      <h1>Share any file.<br><span class="accent">Just send a link.</span></h1>
+      <p class="lede">Photos, PDFs, videos, documents, music or ZIP folders. Upload once, then share the link or QR code with anyone, on any device. No account needed.</p>
+
+      <div class="types">
+        <div class="type"><i class="c-img">JPG</i>Images</div>
+        <div class="type"><i class="c-pdf">PDF</i>PDFs</div>
+        <div class="type"><i class="c-vid">MP4</i>Videos</div>
+        <div class="type"><i class="c-doc">DOC</i>Documents</div>
+        <div class="type"><i class="c-aud">MP3</i>Audio</div>
+        <div class="type"><i class="c-zip">ZIP</i>Archives</div>
+        <div class="type"><i class="c-any">&bull;&bull;&bull;</i>Any file <small>up to 10 MB</small></div>
+      </div>
+
+      <div class="trust">
+        <div><b>10 MB</b>per file</div>
+        <div><b>1h &ndash; 7d</b>link lifetime</div>
+        <div><b>Private</b>cloud storage</div>
+      </div>
+    </div>
+
+    <div class="panel fade">
+      <!-- upload state -->
+      <div id="uploadBox">
+        <div class="panel-head"><h2>Upload a file</h2><span>Any type &middot; max 10 MB</span></div>
+
+        <label id="dropZone" class="drop">
+          <input type="file" id="fileInput" hidden>
+          <div class="drop-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M7 8l5-5 5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg></div>
+          <div class="drop-title">Drag &amp; drop or <span>choose a file</span></div>
+          <div class="drop-sub">Images, PDFs, videos, docs, ZIP and more</div>
+        </label>
+
+        <div class="file-row" id="fileRow" hidden>
+          <div class="ftype" id="ftype">FILE</div>
+          <div class="file-info"><div class="file-name" id="fname"></div><div class="file-size" id="fsize"></div></div>
+          <button class="icon-btn" id="removeBtn" title="Remove file"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+        </div>
+
+        <div class="label">Link expires after</div>
+        <div class="seg" id="expirySeg">
+          <button type="button" data-h="1">1 hour</button>
+          <button type="button" data-h="24" class="active">1 day</button>
+          <button type="button" data-h="72">3 days</button>
+          <button type="button" data-h="168">7 days</button>
+        </div>
+
+        <button id="uploadBtn" class="btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>
+          Upload &amp; get link
+        </button>
+
+        <div class="progress" id="progress" hidden>
+          <div class="track"><div class="bar" id="bar"></div></div>
+          <div class="progress-row"><span id="progressLabel">Uploading&hellip;</span><span id="progressPct">0%</span></div>
+        </div>
+      </div>
+
+      <!-- result state -->
+      <div id="result" class="fade" hidden>
+        <div class="done-head">
+          <div class="done-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div>
+          <div><h2>Your file is ready to share</h2><p id="rName"></p></div>
+        </div>
+
+        <div class="file-row">
+          <div class="ftype" id="rType">FILE</div>
+          <div class="file-info"><div class="file-name" id="rFile"></div><div class="file-size" id="rSize"></div></div>
+        </div>
+
+        <div class="linkbox">
+          <input type="text" id="linkInput" readonly aria-label="Share link">
+          <button class="btn" id="copyBtn">Copy</button>
+        </div>
+
+        <div class="btn-row" style="margin-top:10px">
+          <button class="btn" id="shareLinkBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>
+            Share link
+          </button>
+          <a class="btn secondary" id="waShare" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="#25d366"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.4 14.1c-.2.6-1.3 1.2-1.8 1.3-.5.1-1 .1-3.3-.8-2.8-1.1-4.5-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.3-.3.6-.3.8-.3h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .5l-.4.6-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.1 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.7-.1l2 1c.3.1.5.2.6.3.1.2.1.7-.1 1.3z"/></svg>
+            WhatsApp
+          </a>
+        </div>
+
+        <div class="qr-card">
+          <div class="qr" id="qr"></div>
+          <div class="qr-side">
+            <h3>QR code</h3>
+            <p>Scan with a phone camera to open the download page.</p>
+            <button class="btn secondary" id="qrDownloadBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+              Download QR
+            </button>
+            <button class="btn secondary" id="qrShareBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>
+              Share QR
+            </button>
+          </div>
+        </div>
+
+        <div class="meta">
+          <div><span>Expires</span><b id="rExpires"></b></div>
+          <div><span>Time left</span><b id="rLeft"></b></div>
+        </div>
+
+        <button id="anotherBtn" class="btn ghost">Upload another file</button>
+      </div>
+    </div>
   </section>
 
-  <main class="card">
-    <!-- upload state -->
-    <div id="uploadBox">
-      <label id="dropZone" class="drop">
-        <input type="file" id="fileInput" hidden>
-        <div class="drop-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M20 16v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3"/></svg>
-        </div>
-        <strong id="dropText">Drop your file here, or <span class="grad">browse</span></strong>
-        <small id="dropSub">Any file type &middot; up to 10 MB</small>
-      </label>
-
-      <div class="label">Link expires after</div>
-      <div class="seg" id="expirySeg">
-        <button type="button" data-h="1">1 hour</button>
-        <button type="button" data-h="24" class="active">1 day</button>
-        <button type="button" data-h="72">3 days</button>
-        <button type="button" data-h="168">7 days</button>
-      </div>
-
-      <button id="uploadBtn" class="btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>
-        <span>Generate share link</span>
-      </button>
-
-      <div class="progress" id="progress" hidden>
-        <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
-        <div class="progress-text"><span id="progressLabel">Uploading to cloud...</span><span id="progressPct">0%</span></div>
-      </div>
-    </div>
-
-    <!-- result state -->
-    <div id="result" class="result center" hidden>
-      <div class="success-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div>
-      <h2>Your link is ready!</h2>
-      <p class="muted" id="resultInfo"></p>
-
-      <div class="linkbox">
-        <input type="text" id="linkInput" readonly>
-        <button id="copyBtn" class="btn btn-sm">Copy</button>
-      </div>
-
-      <div class="share-row">
-        <div class="share-btns">
-          <a id="waShare" target="_blank" rel="noopener">&#128172; Share on WhatsApp</a>
-          <a id="mailShare">&#9993;&#65039; Share via Email</a>
-          <a id="openLink" target="_blank" rel="noopener">&#8599; Open link</a>
-        </div>
-        <div class="qr" id="qr" title="Scan to open on phone"></div>
-      </div>
-
-      <button id="anotherBtn" class="btn ghost">Upload another file</button>
-    </div>
-  </main>
-
-  <section class="features">
-    <div class="feature">
-      <div class="f-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
-      <h3>Private by design</h3>
-      <p>Files sit in a private cloud bucket. Only people with your unique link can download them.</p>
-    </div>
-    <div class="feature">
-      <div class="f-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
-      <h3>Auto-expiring links</h3>
-      <p>Choose 1 hour to 7 days. Expired files are deleted automatically by a scheduled cleanup job.</p>
-    </div>
-    <div class="feature">
-      <div class="f-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a5 5 0 0 1-.9-9.9A6 6 0 0 1 17.7 9 4.5 4.5 0 0 1 17.5 18z"/></svg></div>
-      <h3>Cloud powered</h3>
-      <p>Java Spring Boot on Render, PostgreSQL and object storage on Supabase. Fast from anywhere.</p>
-    </div>
-  </section>
-
-  <section class="steps">
+  <section class="how">
     <h2>How it works</h2>
-    <div class="step-row">
-      <div><div class="step-num">1</div><h3>Upload</h3><p>Drop a file and choose how long the link should live.</p></div>
-      <div><div class="step-num">2</div><h3>Share</h3><p>Copy the link, scan the QR code or send it on WhatsApp.</p></div>
-      <div><div class="step-num">3</div><h3>Download</h3><p>Anyone with the link downloads it until it expires.</p></div>
+    <div class="how-grid">
+      <article><div class="n">1</div><h3>Upload your file</h3><p>Pick any file up to 10 MB and choose how long the link should stay active.</p></article>
+      <article><div class="n">2</div><h3>Share link or QR</h3><p>Copy the link, send it on WhatsApp, or download the QR code and share it as an image.</p></article>
+      <article><div class="n">3</div><h3>Auto-delete</h3><p>When the time is up, the link stops working and the file is removed from cloud storage.</p></article>
     </div>
   </section>
 
   <footer>
-    &copy; 2026 CloudShare &middot; Integrated Project: Java Programming &amp; Cloud Computing
-    <div class="tech"><span>Java 17</span><span>Spring Boot</span><span>PostgreSQL</span><span>Supabase Storage</span><span>Render</span><span>Docker</span></div>
+    <span>&copy; 2026 CloudShare &middot; Java &amp; Cloud Computing project</span>
   </footer>
 
   <div class="toast" id="toast"></div>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="/common.js"></script>
   <script src="/app.js"></script>
 </body>
 </html>

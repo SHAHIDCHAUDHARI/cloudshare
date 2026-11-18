@@ -1,32 +1,4 @@
-const $ = id => document.getElementById(id);
 const token = location.pathname.split('/').filter(Boolean).pop();
-
-function formatSize(b) {
-  if (b < 1024) return b + ' B';
-  if (b < 1048576) return (b / 1024).toFixed(1) + ' KB';
-  return (b / 1048576).toFixed(1) + ' MB';
-}
-
-function timeAgo(date) {
-  const s = Math.floor((Date.now() - date) / 1000);
-  if (s < 60) return 'just now';
-  if (s < 3600) return Math.floor(s / 60) + 'm ago';
-  if (s < 86400) return Math.floor(s / 3600) + 'h ago';
-  return Math.floor(s / 86400) + 'd ago';
-}
-
-function startCountdown(expires) {
-  const tick = () => {
-    let s = Math.max(0, Math.floor((expires - Date.now()) / 1000));
-    if (s === 0) { showError('Link expired', 'This link has expired and the file was removed.'); return; }
-    const d = Math.floor(s / 86400); s %= 86400;
-    const h = Math.floor(s / 3600); s %= 3600;
-    const m = Math.floor(s / 60); s %= 60;
-    $('countdown').textContent = d ? `${d}d ${h}h` : h ? `${h}h ${m}m` : `${m}m ${s}s`;
-  };
-  tick();
-  setInterval(tick, 1000);
-}
 
 function showError(title, text) {
   $('loading').hidden = true;
@@ -36,20 +8,35 @@ function showError(title, text) {
   $('errorBox').hidden = false;
 }
 
+function startCountdown(expires) {
+  const timer = setInterval(tick, 1000);
+  function tick() {
+    const left = expires - Date.now();
+    if (left <= 0) {
+      clearInterval(timer);
+      showError('This link has expired', 'The file has been removed from cloud storage. Ask the sender for a new link.');
+      return;
+    }
+    $('countdown').textContent = timeLeft(left);
+  }
+  tick();
+}
+
 async function load() {
   try {
     const res = await fetch('/api/files/' + encodeURIComponent(token));
     const data = await res.json();
     if (!res.ok) {
-      showError(res.status === 410 ? 'Link expired' : 'Link not found', data.error || 'Something went wrong.');
+      res.status === 410
+        ? showError('This link has expired', data.error)
+        : showError('File not found', 'This link does not exist. Check that you copied the full link.');
       return;
     }
-    const ext = data.fileName.includes('.') ? data.fileName.split('.').pop().toUpperCase().slice(0, 4) : 'FILE';
-    $('fileIcon').textContent = ext;
+    setTypeBadge($('ftype'), data.fileName);
     $('fileName').textContent = data.fileName;
     $('fileSize').textContent = formatSize(data.size);
+    $('uploaded').textContent = fmtDate(new Date(data.uploadedAt));
     $('downloads').textContent = data.downloads;
-    $('uploaded').textContent = timeAgo(new Date(data.uploadedAt));
     $('downloadBtn').href = '/api/files/' + encodeURIComponent(token) + '/download';
     $('downloadBtn').addEventListener('click', () => {
       setTimeout(() => $('downloads').textContent = +$('downloads').textContent + 1, 800);
@@ -58,7 +45,7 @@ async function load() {
     $('loading').hidden = true;
     $('fileBox').hidden = false;
   } catch (e) {
-    showError('Server unreachable', 'Could not reach the server. Please try again in a moment.');
+    showError('Server is waking up', 'The free cloud server sleeps when idle. Refresh this page in about 30 seconds.');
   }
 }
 load();

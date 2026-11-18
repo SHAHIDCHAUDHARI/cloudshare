@@ -12,7 +12,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @RestController
 @RequestMapping("/api")
@@ -24,9 +26,14 @@ public class FileController {
         this.fileService = fileService;
     }
 
-    public record UploadResponse(String token, String link, String fileName, long size, LocalDateTime expiresAt) {}
+    // Instant is sent as UTC with a trailing "Z", so every browser converts it to its own local time correctly
+    public record UploadResponse(String token, String link, String fileName, long size, Instant expiresAt) {}
 
-    public record FileInfo(String fileName, long size, LocalDateTime uploadedAt, LocalDateTime expiresAt, int downloads) {}
+    public record FileInfo(String fileName, long size, Instant uploadedAt, Instant expiresAt, int downloads) {}
+
+    private static Instant utc(LocalDateTime t) {
+        return t.atZone(ZoneId.systemDefault()).toInstant();
+    }
 
     @PostMapping("/upload")
     public UploadResponse upload(@RequestParam("file") MultipartFile file,
@@ -34,13 +41,13 @@ public class FileController {
         SharedFile sf = fileService.upload(file, expiryHours);
         String link = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/f/").path(sf.getToken()).toUriString();
-        return new UploadResponse(sf.getToken(), link, sf.getOriginalName(), sf.getFileSize(), sf.getExpiresAt());
+        return new UploadResponse(sf.getToken(), link, sf.getOriginalName(), sf.getFileSize(), utc(sf.getExpiresAt()));
     }
 
     @GetMapping("/files/{token}")
     public FileInfo info(@PathVariable String token) {
         SharedFile sf = fileService.getActive(token);
-        return new FileInfo(sf.getOriginalName(), sf.getFileSize(), sf.getUploadedAt(), sf.getExpiresAt(), sf.getDownloadCount());
+        return new FileInfo(sf.getOriginalName(), sf.getFileSize(), utc(sf.getUploadedAt()), utc(sf.getExpiresAt()), sf.getDownloadCount());
     }
 
     @GetMapping("/files/{token}/download")

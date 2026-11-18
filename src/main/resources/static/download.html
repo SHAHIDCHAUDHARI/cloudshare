@@ -3,64 +3,70 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Download file - CloudShare</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%237c5cff' d='M7 18a5 5 0 0 1-.9-9.9A6 6 0 0 1 17.7 9 4.5 4.5 0 0 1 17.5 18z'/></svg>">
+  <title>Download file — CloudShare</title>
+  <meta name="theme-color" content="#09090b">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%234f8cff'/><path d='M8 16a3 3 0 0 1-.4-6A4 4 0 0 1 15.4 9 3 3 0 0 1 16 16z' fill='white'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <div class="bg"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
-
-  <nav>
-    <a href="/" class="logo">
-      <span class="logo-icon"><svg viewBox="0 0 24 24" fill="#fff"><path d="M7 18a5 5 0 0 1-.9-9.9A6 6 0 0 1 17.7 9 4.5 4.5 0 0 1 17.5 18z"/></svg></span>
+  <header class="nav">
+    <a href="/" class="brand">
+      <span class="brand-mark"><svg viewBox="0 0 24 24" fill="#fff"><path d="M7 18a4.5 4.5 0 0 1-.6-8.96A6 6 0 0 1 17.6 9 4.5 4.5 0 0 1 17 18z"/></svg></span>
       CloudShare
     </a>
-    <span class="pill"><b>&#9679;</b> Secure download</span>
-  </nav>
+    <div class="nav-right"><span class="nav-note">Secure download</span><span class="credit">created by <b>Shahid</b></span></div>
+  </header>
 
-  <section class="hero">
-    <span class="eyebrow"><span class="dot"></span> Someone shared a file with you</span>
-  </section>
+  <main class="solo">
+    <div class="center"><span class="badge">Someone shared a file with you</span></div>
 
-  <main class="card center">
-    <div id="loading">
-      <div class="skeleton" style="width:84px;height:84px;border-radius:22px"></div>
-      <div class="skeleton" style="width:70%"></div>
-      <div class="skeleton" style="width:45%"></div>
-    </div>
-
-    <div id="fileBox" hidden>
-      <div class="file-icon" id="fileIcon">FILE</div>
-      <div class="file-name" id="fileName"></div>
-      <p class="muted" id="fileSize" style="margin-top:6px"></p>
-
-      <div class="stats">
-        <div class="stat"><b id="countdown">--</b><span>Expires in</span></div>
-        <div class="stat"><b id="downloads">0</b><span>Downloads</span></div>
-        <div class="stat"><b id="uploaded">--</b><span>Uploaded</span></div>
+    <div class="panel">
+      <div id="loading">
+        <div class="skeleton" style="width:64px;height:64px;border-radius:16px"></div>
+        <div class="skeleton" style="width:70%;height:20px"></div>
+        <div class="skeleton" style="width:40%"></div>
+        <div class="skeleton" style="height:70px;border-radius:14px"></div>
       </div>
 
-      <a id="downloadBtn" class="btn" href="#">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12M7 11l5 5 5-5"/><path d="M20 16v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3"/></svg>
-        <span>Download file</span>
-      </a>
+      <div id="fileBox" class="fade" hidden>
+        <div class="dl-file">
+          <div class="ftype" id="ftype">FILE</div>
+          <h1 id="fileName"></h1>
+          <p id="fileSize"></p>
+        </div>
+
+        <div class="timer"><span>Link expires in</span><b id="countdown">--:--:--</b></div>
+
+        <div class="meta">
+          <div><span>Uploaded</span><b id="uploaded"></b></div>
+          <div><span>Downloads</span><b id="downloads"></b></div>
+        </div>
+
+        <a id="downloadBtn" class="btn" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+          Download file
+        </a>
+      </div>
+
+      <div id="errorBox" class="center fade" hidden>
+        <div class="err-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5h.01"/></svg></div>
+        <h2 id="errorTitle" style="font-size:20px"></h2>
+        <p id="errorText"></p>
+        <a href="/" class="btn">Share your own file</a>
+      </div>
     </div>
 
-    <div id="errorBox" hidden>
-      <div class="success-icon error-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v5M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg></div>
-      <h2 id="errorTitle">Link not available</h2>
-      <p class="muted" id="errorText" style="margin-top:8px"></p>
-    </div>
-
-    <a href="/" class="back">&larr; Share your own file with CloudShare</a>
+    <a href="/" class="back">&larr; Back to CloudShare</a>
   </main>
 
   <footer>
-    &copy; 2026 CloudShare &middot; Integrated Project: Java Programming &amp; Cloud Computing
+    <span>&copy; 2026 CloudShare &middot; Java &amp; Cloud Computing project</span>
   </footer>
 
+  <script src="/common.js"></script>
   <script src="/download.js"></script>
 </body>
 </html>
