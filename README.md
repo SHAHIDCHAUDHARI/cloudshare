@@ -118,3 +118,4 @@ B.Tech CSE, 5th Semester, JG University
 | Minhal Narsinh | 2501442058 |
 | Shaikh Mohammad Sarjil | 2501442120 |
 | Malek Sahran Khan | 2501442050 |
+| Vivek Nayi | 2501442059 |
